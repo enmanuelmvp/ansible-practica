@@ -3,7 +3,6 @@
   hosts: servers
   become: yes
   tasks:
-
     - name: 📦 Actualizar caché de paquetes APT
       apt:
         update_cache: yes
@@ -12,6 +11,16 @@
       apt:
         upgrade: dist
         autoremove: yes
+
+    - name: 🐮 Instalar cowsay
+      apt:
+        name: cowsay
+        state: present
+
+    - name: 📊 Instalar htop
+      apt:
+        name: htop
+        state: present
 
     - name: 👤 Crear usuario itla
       user:
