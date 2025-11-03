@@ -1,0 +1,51 @@
+---
+- name: 🚀 Configuración Automática de Servidores
+  hosts: servers
+  become: yes
+  tasks:
+
+    - name: 📦 Actualizar caché de paquetes APT
+      apt:
+        update_cache: yes
+
+    - name: ⬆️ Actualizar paquetes del sistema
+      apt:
+        upgrade: dist
+        autoremove: yes
+
+    - name: 👤 Crear usuario itla
+      user:
+        name: itla
+        comment: "Usuario creado por Ansible"
+        shell: /bin/bash
+        create_home: yes
+
+    - name: 📁 Crear carpeta app
+      file:
+        path: /home/itla/app
+        state: directory
+        owner: itla
+        group: itla
+        mode: '0755'
+
+    - name: 📝 Crear archivo hola.txt
+      copy:
+        content: "¡Hola ITLA! Ansible funciona correctamente.\n"
+        dest: /home/itla/app/hola.txt
+        owner: itla
+        group: itla
+        mode: '0644'
+
+    - name: ✅ Verificar archivo creado
+      stat:
+        path: /home/itla/app/hola.txt
+      register: archivo_hola
+
+    - name: 💬 Mostrar contenido del archivo
+      command: cat /home/itla/app/hola.txt
+      register: contenido
+      when: archivo_hola.stat.exists
+      changed_when: false
+
+    - debug:
+        msg: "{{ contenido.stdout }}"
